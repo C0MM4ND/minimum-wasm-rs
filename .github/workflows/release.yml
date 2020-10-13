@@ -57,3 +57,14 @@ jobs:
         asset_path: ./numeric/target/wasm32-unknown-unknown/release/numeric.wasm
         asset_name: numeric.wasm
         asset_content_type: application/wasm
+
+    - name: Upload HostString Release Asset
+      id: upload-hoststring
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: ./hoststring/target/wasm32-unknown-unknown/release/hoststring.wasm
+        asset_name: hoststring.wasm
+        asset_content_type: application/wasm

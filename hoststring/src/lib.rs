@@ -3,6 +3,7 @@ use std::mem;
 use std::os::raw::{c_char, c_void};
 
 extern "C" {
+    fn host_string()->*mut c_char;
     fn log_message(pointer: *const u8, length: u32);
 }
 
@@ -23,14 +24,17 @@ pub extern fn deallocate(pointer: *mut c_void, capacity: usize) {
     }
 }
 
+
 #[no_mangle]
-pub extern "C" fn greet(name: *mut c_char) {
-    let subject = unsafe { CStr::from_ptr(name).to_bytes().to_vec() };
+pub extern "C" fn greet() {
+    let ptr = unsafe {host_string()};
+    let subject = unsafe { CStr::from_ptr(ptr).to_bytes().to_vec() };
     let mut output = b"Hello, ".to_vec();
     output.extend(&subject);
     output.extend(&[b'!']);
 
     unsafe{
-        log_message(output.as_ptr(), output.len() as u32) 
+        log_message(output.as_ptr(), output.len() as u32)
+        
     }
 }
