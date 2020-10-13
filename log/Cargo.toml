@@ -1,5 +1,5 @@
 [package]
-name = "minimum-wasm-rs"
+name = "log"
 version = "0.1.0"
 authors = ["Command <maoxs2@gmail.com>"]
 edition = "2018"

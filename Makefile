@@ -1,6 +1,5 @@
-build-debug:
-	cargo build --target wasm32-unknown-unknown
-build-release:
-	cargo build --target wasm32-unknown-unknown --release
-add-target:
-	rustup target add wasm32-unknown-unknown
+release-all: release-log release-numeric 
+release-log:
+	cd log; make build-release; cd -;
+release-numeric:
+	cd numeric; make build-release; cd -;

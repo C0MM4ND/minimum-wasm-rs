@@ -13,8 +13,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Build
-      run: make add-target && make build-release
+
+    - name: Add wasm32-unknown-unknown
+      id: add_wasm32
+      run: rustup target add wasm32-unknown-unknown
+
+    - name: Build Release
+      run: make
+
+    - name: Get short SHA
+      id: short_sha
+      run: echo "::set-output name=sha8::$(echo ${GITHUB_SHA} | cut -c1-8)"
 
     - name: Create Release
       id: create_release
@@ -22,18 +31,29 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
+        tag_name: ${{ steps.short_sha.outputs.sha8 }}
+        release_name: Release from ${{ github.ref }}
         draft: false
         prerelease: false
 
-    - name: Upload Release Asset
-      id: upload-release-asset 
+    - name: Upload Log Release Asset
+      id: upload-log
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: ./target/wasm32-unknown-unknown/release/minimum_wasm_rs.wasm
-        asset_name: module.wasm
+        asset_path: ./log/target/wasm32-unknown-unknown/release/log.wasm
+        asset_name: log.wasm
+        asset_content_type: application/wasm
+
+    - name: Upload Numeric Release Asset
+      id: upload-numeric
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: ./numeric/target/wasm32-unknown-unknown/release/numeric.wasm
+        asset_name: numeric.wasm
         asset_content_type: application/wasm
