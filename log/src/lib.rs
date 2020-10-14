@@ -29,6 +29,7 @@ pub extern "C" fn greet(name: *mut c_char) {
     let mut output = b"Hello, ".to_vec();
     output.extend(&subject);
     output.extend(&[b'!']);
+    output.extend(&[b'\0']); // as the ending null for being a legal *char string
 
     unsafe{
         log_message(output.as_ptr(), output.len() as u32) 
