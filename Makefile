@@ -5,3 +5,5 @@ release-numeric:
 	cd numeric; make build-release; cd -;
 release-hoststring:
 	cd hoststring; make build-release; cd -;	
+release-hostbytes:
+	cd hostbytes; make build-release; cd -;	
